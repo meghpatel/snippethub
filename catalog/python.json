@@ -1,0 +1,102 @@
+[
+  {
+    "id": "read-json-file",
+    "title": "Read a JSON file",
+    "description": "Load a UTF-8 JSON file into Python dictionaries and lists.",
+    "language": "python", "category": "Files & JSON",
+    "tags": ["json", "read", "file", "dictionary"],
+    "aliases": ["import a JSON", "load json from disk", "read json file", "open a json file"],
+    "dependencies": [],
+    "code": "import json\nfrom pathlib import Path\n\npath = Path(\"data.json\")\nwith path.open(encoding=\"utf-8\") as file:\n    data = json.load(file)\n"
+  },
+  {
+    "id": "json-to-dataframe",
+    "title": "Convert JSON to a pandas DataFrame",
+    "description": "Read a JSON file containing a list of records into a pandas DataFrame. For nested records, use the flatten snippet.",
+    "language": "python", "category": "Data & pandas",
+    "tags": ["json", "pandas", "dataframe", "convert", "records"],
+    "aliases": ["converting JSON to pandas DF", "json to dataframe", "turn json into a table", "load json into pandas"],
+    "dependencies": ["pandas"],
+    "code": "import json\nimport pandas as pd\n\n# Expected JSON: [{\"name\": \"Ada\", \"score\": 95}]\nwith open(\"data.json\", encoding=\"utf-8\") as file:\n    records = json.load(file)\n\ndf = pd.DataFrame.from_records(records)\n"
+  },
+  {
+    "id": "write-json-file",
+    "title": "Write a dictionary to JSON",
+    "description": "Save a dictionary as readable UTF-8 JSON with indentation.",
+    "language": "python", "category": "Files & JSON",
+    "tags": ["write", "json", "dictionary", "file"],
+    "aliases": ["save dict to json", "export dictionary as json", "write json file", "pretty print json to disk"],
+    "dependencies": [],
+    "code": "import json\n\ndata = {\"name\": \"Ada\", \"score\": 95}\nwith open(\"output.json\", \"w\", encoding=\"utf-8\") as file:\n    json.dump(data, file, indent=2, ensure_ascii=False)\n"
+  },
+  {
+    "id": "parse-json-string",
+    "title": "Parse a JSON string",
+    "description": "Convert JSON text already in memory into a Python object.",
+    "language": "python", "category": "Files & JSON",
+    "tags": ["json", "parse", "string", "dictionary"],
+    "aliases": ["json string to dict", "decode json text", "parse json string", "deserialize json"],
+    "dependencies": [],
+    "code": "import json\n\ntext = '{\"name\": \"Ada\", \"active\": true}'\ndata = json.loads(text)\n"
+  },
+  {
+    "id": "read-csv-dataframe",
+    "title": "Read CSV into a pandas DataFrame",
+    "description": "Load a comma-separated file with a header row into pandas.",
+    "language": "python", "category": "Data & pandas",
+    "tags": ["csv", "pandas", "dataframe", "read", "file"],
+    "aliases": ["import csv into pandas", "csv to df", "read spreadsheet csv", "load csv file"],
+    "dependencies": ["pandas"],
+    "code": "import pandas as pd\n\ndf = pd.read_csv(\"data.csv\", encoding=\"utf-8\")\n"
+  },
+  {
+    "id": "flatten-nested-json",
+    "title": "Flatten nested JSON with pandas",
+    "description": "Turn nested dictionaries in JSON records into flat, dotted DataFrame columns.",
+    "language": "python", "category": "Data & pandas",
+    "tags": ["nested", "json", "pandas", "dataframe", "normalize"],
+    "aliases": ["flatten nested json", "normalize json records", "nested dictionary to dataframe", "flatten json columns"],
+    "dependencies": ["pandas"],
+    "code": "import pandas as pd\n\nrecords = [{\"name\": \"Ada\", \"address\": {\"city\": \"London\"}}]\ndf = pd.json_normalize(records, sep=\".\")\n# Columns: name, address.city\n"
+  },
+  {
+    "id": "deduplicate-list",
+    "title": "Remove duplicates from a list",
+    "description": "Keep the first occurrence of each hashable item, preserving its original order.",
+    "language": "python", "category": "Collections",
+    "tags": ["list", "duplicate", "remove", "unique", "order"],
+    "aliases": ["remove duplicate items", "deduplicate list preserving order", "unique values in array", "drop duplicates from list"],
+    "dependencies": [],
+    "code": "items = [\"apple\", \"pear\", \"apple\", \"orange\"]\nunique_items = list(dict.fromkeys(items))\n# ['apple', 'pear', 'orange']; items must be hashable.\n"
+  },
+  {
+    "id": "sort-dictionaries",
+    "title": "Sort a list of dictionaries by a key",
+    "description": "Return records ordered by one dictionary field without changing the input list.",
+    "language": "python", "category": "Collections",
+    "tags": ["sort", "list", "dictionary", "key", "records"],
+    "aliases": ["sort dictionaries by field", "order list of dicts", "sort records by key", "sort array by score"],
+    "dependencies": [],
+    "code": "records = [{\"name\": \"Ada\", \"score\": 95}, {\"name\": \"Lin\", \"score\": 88}]\nsorted_records = sorted(records, key=lambda record: record[\"score\"])\n# Add reverse=True for descending order.\n"
+  },
+  {
+    "id": "list-directory-files",
+    "title": "List files in a directory",
+    "description": "Find regular files directly inside a folder with pathlib; does not recurse into subfolders.",
+    "language": "python", "category": "Files & JSON",
+    "tags": ["file", "directory", "pathlib", "list", "glob"],
+    "aliases": ["list files in folder", "find files in directory", "iterate directory contents", "get folder paths"],
+    "dependencies": [],
+    "code": "from pathlib import Path\n\nfolder = Path(\".\")\nfiles = sorted(path for path in folder.iterdir() if path.is_file())\nfor path in files:\n    print(path.name)\n"
+  },
+  {
+    "id": "parse-date-string",
+    "title": "Convert a date string to datetime",
+    "description": "Parse a date in a known format into a naive datetime object.",
+    "language": "python", "category": "Dates & time",
+    "tags": ["date", "string", "parse", "format", "strptime"],
+    "aliases": ["parse date string", "convert string to datetime", "text to date", "parse timestamp with format"],
+    "dependencies": [],
+    "code": "from datetime import datetime\n\ntext = \"2026-09-12\"\ndate = datetime.strptime(text, \"%Y-%m-%d\")\n"
+  }
+]

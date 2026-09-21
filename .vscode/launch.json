@@ -1,0 +1,10 @@
+{
+  "version": "0.2.0",
+  "configurations": [{
+    "name": "Run SnippetHub Extension",
+    "type": "extensionHost",
+    "request": "launch",
+    "args": ["--extensionDevelopmentPath=${workspaceFolder}/dist/vscode"],
+    "preLaunchTask": "Build VS Code extension"
+  }]
+}

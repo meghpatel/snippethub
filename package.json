@@ -1,0 +1,17 @@
+{
+  "name": "snippethub",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Offline Python snippet reference for people who want to write their own code.",
+  "license": "MIT",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "validate": "node scripts/validate.js",
+    "bench": "node scripts/benchmark.js",
+    "search": "node scripts/search.js",
+    "build:vscode": "node scripts/build-vscode.js",
+    "package:vscode": "npm run build:vscode && cd dist/vscode && npx --yes @vscode/vsce@3.9.2 package --out ../snippethub-0.1.0.vsix",
+    "build:mac": "bash scripts/build-mac.sh"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "snippethub",
+  "displayName": "SnippetHub — Python Reference",
+  "description": "Search curated Python snippets offline using everyday language. Insert deliberately, without autocomplete or AI.",
+  "version": "0.1.0",
+  "publisher": "snippethub",
+  "repository": { "type": "git", "url": "https://github.com/meghpatel/snippethub.git" },
+  "license": "MIT",
+  "engines": { "vscode": "^1.85.0" },
+  "categories": ["Snippets"],
+  "keywords": ["python", "snippets", "offline", "reference"],
+  "main": "./extension.js",
+  "files": ["extension.js", "core/**", "catalog/**", "LICENSE", "README.md", "CONTRIBUTING.md"],
+  "capabilities": { "untrustedWorkspaces": { "supported": true }, "virtualWorkspaces": true },
+  "contributes": {
+    "commands": [{ "command": "snippethub.search", "title": "SnippetHub: Search Python Snippets" }],
+    "keybindings": [{ "command": "snippethub.search", "key": "ctrl+alt+s", "mac": "cmd+alt+s", "when": "editorTextFocus" }]
+  }
+}
