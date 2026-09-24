@@ -1,21 +1,6 @@
 import SwiftUI
 import AppKit
-import JavaScriptCore
-
-struct Snippet: Identifiable, Decodable {
-    let id: String
-    let title: String
-    let description: String
-    let category: String
-    let code: String
-    let tags: [String]
-    let dependencies: [String]
-}
-
-struct SearchResult: Decodable {
-    let snippet: Snippet
-    let score: Double
-}
+import AppIntents
 
 @MainActor
 final class Library: ObservableObject {
@@ -24,37 +9,15 @@ final class Library: ObservableObject {
     @Published var selection: String?
     @Published var error: String?
     @Published var copied = false
-    private var context: JSContext?
-    private var searchFunction: JSValue?
     private var copyReset: Task<Void, Never>?
 
     var selected: Snippet? { results.first { $0.id == selection } }
 
-    init() {
-        do {
-            guard let engineURL = Bundle.main.url(forResource: "search", withExtension: "js"),
-                  let catalogURL = Bundle.main.url(forResource: "python", withExtension: "json"),
-                  let js = JSContext() else {
-                throw NSError(domain: "SnippetHub", code: 1, userInfo: [NSLocalizedDescriptionKey: "Missing bundled search engine or catalog. Rebuild the app."])
-            }
-            context = js
-            js.evaluateScript(try String(contentsOf: engineURL, encoding: .utf8))
-            js.setObject(try String(contentsOf: catalogURL, encoding: .utf8), forKeyedSubscript: "catalogText" as NSString)
-            js.evaluateScript("var engine = new SnippetHub.SearchEngine(JSON.parse(catalogText));")
-            searchFunction = js.evaluateScript("(function(query) { return JSON.stringify(engine.search(query, 50)); })")
-            if let exception = js.exception { throw NSError(domain: "SnippetHub", code: 2, userInfo: [NSLocalizedDescriptionKey: exception.toString() ?? "Search initialization failed"])}
-            search()
-        } catch { self.error = error.localizedDescription }
-    }
+    init() { search() }
 
     func search() {
-        guard let function = searchFunction else { return }
         do {
-            guard let json = function.call(withArguments: [query])?.toString(),
-                  let data = json.data(using: .utf8), context?.exception == nil else {
-                throw NSError(domain: "SnippetHub", code: 3, userInfo: [NSLocalizedDescriptionKey: "Search failed. Reopen the app to reload the catalog."])
-            }
-            results = try JSONDecoder().decode([SearchResult].self, from: data).map(\.snippet)
+            results = try SnippetStore.shared.get().search(query)
             if !results.contains(where: { $0.id == selection }) { selection = results.first?.id }
             copied = false
             error = nil
@@ -180,6 +143,10 @@ struct ContentView: View {
 @main
 struct SnippetHubApp: App {
     @StateObject private var library = Library()
+    init() {
+        if #available(macOS 26.0, *) { SnippetHubShortcuts.updateAppShortcutParameters() }
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView().environmentObject(library)

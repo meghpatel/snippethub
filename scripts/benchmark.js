@@ -1,7 +1,7 @@
 const { performance } = require('node:perf_hooks');
 const { SearchEngine } = require('../core/search');
 const catalog = require('../catalog/python.json');
-const queries = ['import a JSON', 'json to pandas df', 'remove duplicates from a list', 'read jsno file', 'sort dictionaries', 'json to pand', 'unrelated kubernetes'];
+const queries = ['import a JSON', 'json to pandas df', 'remove duplicates from a list', 'read jsno file', 'sort dictionaries', 'json to pand', 'unrelated kubernetes', 'JON', 'jon to pd df', 'pd', 'np'];
 for (const size of [10, 1000, 10000]) {
   // Synthetic duplicates stress large posting lists; this is not a relevance dataset.
   const snippets = Array.from({ length: size }, (_, i) => ({ ...catalog[i % catalog.length], id: `snippet-${i}` }));

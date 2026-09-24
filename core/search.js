@@ -12,6 +12,7 @@
     ['write', 'save', 'export', 'writing', 'saving'],
     ['convert', 'transform', 'turn', 'converting'],
     ['dataframe', 'df', 'dataframes'], ['dictionary', 'dict', 'dictionaries'],
+    ['pandas', 'pd'], ['numpy', 'np'],
     ['list', 'array', 'lists', 'arrays'], ['remove', 'delete', 'drop', 'removing'],
     ['duplicate', 'duplicates', 'deduplicate', 'dedup'],
     ['directory', 'folder', 'directories', 'folders'],
@@ -23,7 +24,11 @@
   GROUPS.forEach(group => group.forEach(word => synonyms.set(word, group[0])));
   const canonical = word => synonyms.get(word) || word;
   function words(text) {
-    return String(text).toLowerCase().replace(/data\s+frames?/g, 'dataframe')
+    // Fold diacritics and drop apostrophes first: without this an accented word
+    // shatters into fragments and "don't" becomes two terms, diluting query coverage.
+    return String(text).normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase().replace(/['\u2018\u2019]/g, '')
+      .replace(/data\s+frames?/g, 'dataframe')
       .match(/[a-z0-9]+/g) || [];
   }
   function tokens(text) { return words(text).filter(word => !STOP.has(word)).map(canonical); }
@@ -101,8 +106,8 @@
     }
 
     search(query = '', limit = 20) {
-      if (!Number.isFinite(limit) || limit < 1) return [];
-      limit = Math.floor(limit);
+      if (typeof limit !== 'number' || Number.isNaN(limit) || limit < 1) return [];
+      limit = Math.min(Math.floor(limit), this.snippets.length); // Infinity means every match.
       const terms = [...new Set(tokens(String(query).slice(0, 256)))].slice(0, 24);
       if (!terms.length) {
         // Blank queries browse; punctuation or filler-only queries do not imply a match.
@@ -113,7 +118,9 @@
         const alternatives = new Map();
         if (this.postings.has(term)) alternatives.set(term, 1);
         for (const t of this.prefixes.get(term) || []) if (!alternatives.has(t)) alternatives.set(t, 0.7);
-        if (term.length >= 4) {
+        // Three-letter queries can omit a letter from words like JSON. Keep
+        // indexed typo targets at four characters and shorter queries exact/prefix-only.
+        if (term.length >= 3) {
           for (const key of deletions(term)) {
             for (const spelling of this.typos.get(key) || []) {
               const t = canonical(spelling);

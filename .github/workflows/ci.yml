@@ -17,10 +17,11 @@ jobs:
       - run: npm run validate
       - run: npm run build:vscode
   mac:
-    runs-on: macos-14
+    # macOS 26 runners ship the Xcode 26+ toolchain the Spotlight actions need.
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm run build:mac
+      - run: npm run test:mac

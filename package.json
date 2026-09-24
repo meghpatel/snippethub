@@ -11,7 +11,8 @@
     "bench": "node scripts/benchmark.js",
     "search": "node scripts/search.js",
     "build:vscode": "node scripts/build-vscode.js",
-    "package:vscode": "npm run build:vscode && cd dist/vscode && npx --yes @vscode/vsce@3.9.2 package --out ../snippethub-0.1.0.vsix",
-    "build:mac": "bash scripts/build-mac.sh"
+    "package:vscode": "npm run build:vscode && cd dist/vscode && npx --yes @vscode/vsce@3.9.2 package --out \"../snippethub-$(node -p \"require('./package.json').version\").vsix\"",
+    "build:mac": "bash scripts/build-mac.sh",
+    "test:mac": "npm run build:mac && bash scripts/test-mac.sh"
   }
 }
